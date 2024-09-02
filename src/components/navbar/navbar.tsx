@@ -4,13 +4,13 @@ import { getSpotifyProfile } from '../../api/spotifyApi';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../app/contexts/authContext';
 import { PlaybackContext } from '../../app/contexts/playbackContext';
-import { SpotifyUserProfile } from '../../api/types';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { IoPauseSharp, IoPlaySharp } from "react-icons/io5";
 import { HomeButton } from './homeButton';
 
+
 const Navbar: React.FC = () => {
-  const [profile, setProfile] = useState<SpotifyUserProfile | null>(null);
+  const [profile, setProfile] = useState<SpotifyApi.CurrentUsersProfileResponse | null>(null);
   const { token } = useContext(AuthContext);
   const { 
     currentTrack,
@@ -40,11 +40,10 @@ const Navbar: React.FC = () => {
     return "good evening";
   };
 
-
   useEffect(() => {
-    if (token) {
-      getSpotifyProfile(token).then((data) => setProfile(data));
-    }
+    getSpotifyProfile().then((data) => {
+      setProfile(data ?? null); 
+    });
   }, [token]); 
 
   if (!profile) return <div>guest</div>;

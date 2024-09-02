@@ -2,14 +2,15 @@ import React, { createContext, useState, useEffect, useCallback, ReactNode } fro
 import { useNavigate } from 'react-router-dom';
 import { getNewToken } from '../../api/spotifyAuth';
 import { stopPlayback, disconnectPlayer } from '../../api/playbackSDK';
-import { getCurrentUser } from '../../api/spotifyApi';
+
+import { getSpotifyProfile } from '../../api/spotifyApi';
 
 interface AuthContextType {
   token: string | null;
   setToken: (token: string | null) => void;
   loading: boolean;
   logout: () => void;
-  userId: string | null;
+  profile: SpotifyApi.CurrentUsersProfileResponse | null;
 }
 
 const defaultAuthContext: AuthContextType = {
@@ -17,7 +18,7 @@ const defaultAuthContext: AuthContextType = {
   setToken: () => {},
   loading: true,
   logout: () => {},
-  userId: null
+  profile: null
 }
 
 
@@ -26,7 +27,7 @@ export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [profile, setProfile] = useState<SpotifyApi.CurrentUsersProfileResponse | null>(null);
   const navigate = useNavigate();
 
   const logout = useCallback(async () => {
@@ -35,7 +36,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       await disconnectPlayer(); // Disconnect the player
     }
     setToken(null);
-    setUserId(null);
+    setProfile(null);
     localStorage.removeItem('spotify_access_token');
     navigate('/');
   }, [navigate, token])
@@ -54,57 +55,50 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     }
   }, [logout]);
 
-  const fetchUserId = useCallback(async (accessToken: string) => {
-    try {
-      const userId = await getCurrentUser(accessToken);
-      setUserId(userId);
-      localStorage.setItem('spotify_user_id', userId);
-    } catch (error) {
-      console.error('Error fetching user ID:', error);
-    }
-  }, []);
-
   useEffect(() => {
-    const storedToken = localStorage.getItem('spotify_access_token');
-    const expirationTime = localStorage.getItem('token_expiration');
-    const storedUserId = localStorage.getItem('spotify_user_id');
-    
-    if (storedToken && expirationTime) {
-      const currentTime = new Date().getTime();
-      if (currentTime < parseInt(expirationTime)) {
-        setToken(storedToken);
-        if (storedUserId) {
-          setUserId(storedUserId);
-        } else {
-          fetchUserId(storedToken);
-        }
-      } else {
-        refreshToken();
-      }
-    }
-    setLoading(false);
-  }, [refreshToken, fetchUserId]);
-
-  useEffect(() => {
-    if (token) {
-      const expirationTime = new Date().getTime() + 3600 * 1000; // 1 hour from now
-      localStorage.setItem('token_expiration', expirationTime.toString());
-
-      if (!userId) {
-        fetchUserId(token);
-      }
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem('spotify_access_token');
+      const expirationTime = localStorage.getItem('token_expiration');
       
-      // Set up a timer to refresh the token 5 minutes before it expires
-      const refreshTimer = setTimeout(() => {
-        refreshToken();
-      }, 3300 * 1000); // 55 minutes
+      if (storedToken && expirationTime) {
+        const currentTime = new Date().getTime();
+        if (currentTime < parseInt(expirationTime)) {
+          setToken(storedToken);
+          if (!profile) {
+            getSpotifyProfile().then((data) => {
+              if (data) {
+                setProfile(data);
+              } else {
+                console.log("Failed to fetch profile data");
+                setProfile(null);
+              }
+            });
+          } 
+        } else {
+          await refreshToken();
+        }
+      }
+      setLoading(false);
+    };
 
-      return () => clearTimeout(refreshTimer);
-    }
-  }, [token, refreshToken, userId, fetchUserId]);
+    initializeAuth();
+
+    // Set up a timer to refresh the token 5 minutes before it expires
+    const refreshTimer = setInterval(() => {
+      const expirationTime = localStorage.getItem('token_expiration');
+      if (expirationTime) {
+        const timeUntilExpiration = parseInt(expirationTime) - new Date().getTime();
+        if (timeUntilExpiration < 300000) { // 5 minutes in milliseconds
+          refreshToken();
+        }
+      }
+    }, 600000); // Check every 10 minutes
+
+    return () => clearInterval(refreshTimer);
+  }, [refreshToken, profile]);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, loading, logout, userId }}>
+    <AuthContext.Provider value={{ token, setToken, loading, logout, profile }}>
       {children}
     </AuthContext.Provider>
   );

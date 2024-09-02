@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SpotifyUserProfile, 
+import {
         PlaylistPreview, 
         SimplifiedPlaylistObject, 
         Image, 
@@ -10,25 +10,46 @@ import { SpotifyUserProfile,
         TrackAudioFeatures
 } from './types';
 
+import SpotifyWebApi from 'spotify-web-api-node';
+
+const spotifyApi: SpotifyWebApi = new SpotifyWebApi({
+  clientId: import.meta.env.VITE_CLIENT_ID,
+  clientSecret: import.meta.env.VITE_CLIENT_SECRET,
+  redirectUri: import.meta.env.VITE_REDIRECT_URI
+})
+
+async function callSpotifyApi<T>(
+  apiMethod: (api: SpotifyWebApi) => Promise<T>
+): Promise<T | null> {
+  const token = localStorage.getItem('spotify_access_token');
+  if (!token) {
+    console.error('No Spotify access token found');
+    return null;
+  }
+  
+  spotifyApi.setAccessToken(token);
+  
+  try {
+    return await apiMethod(spotifyApi);
+  } catch (error) {
+    console.error('Error calling Spotify API:', error);
+    return null;
+  }
+}
+
 const apiEndpoint = 'https://api.spotify.com/v1';
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export async function getSpotifyProfile(token: string): Promise<SpotifyUserProfile | null> {
-  try {
-    const response = await axios.get(`${apiEndpoint}/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching Spotify profile:', error);
-    return null;
-  }
+export async function getSpotifyProfile(): Promise<SpotifyApi.CurrentUsersProfileResponse | null> {
+  return callSpotifyApi(api => api.getMe().then(response => response.body));
 }
 
+
 export async function getUserPlaylists(token: string): Promise<PlaylistPreview[] | null> {
+
   try {
     const response = await axios.get(`${apiEndpoint}/me/playlists`, {
       headers: { Authorization: `Bearer ${token}` }

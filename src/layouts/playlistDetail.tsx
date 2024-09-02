@@ -18,7 +18,7 @@ const getTotalDuration = ( tracks: Playlists_TrackObject[] ) => {
 export const PlaylistDetailLayout: React.FC = () => {
     const { playlistId } = useParams<{ playlistId: string | undefined }>();
     const [playlist, setPlaylist] = useState<SimplifiedPlaylist | null>();
-    const { token, logout, userId } = useContext(AuthContext);
+    const { token, logout, profile } = useContext(AuthContext);
     const { handlePlayTrackInContext } = useContext(PlaybackContext)
 
     const handlePlayTrack = useCallback((trackUri: string) => {
@@ -84,7 +84,7 @@ export const PlaylistDetailLayout: React.FC = () => {
 
     const trackCount = getTrackCount(playlist.tracks);
     const totalDuration = formatDuration(getTotalDuration(playlist.tracks));
-    const isOwner = playlist.owner.id === userId;
+    const isOwner = playlist.owner.id === profile?.id;
 
     return (
         <div className='h-full w-full grid grid-rows-[auto_auto_1fr]'>

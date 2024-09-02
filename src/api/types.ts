@@ -76,6 +76,7 @@ export interface SimplifiedPlaylistObject {
 
 export interface Playlists_TrackObject {
   id: string;
+  external_urls: ExternalUrl;
   duration_ms: number;
   name: string;
   popularity: number;

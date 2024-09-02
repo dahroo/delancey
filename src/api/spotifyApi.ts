@@ -101,6 +101,7 @@ export async function getPlaylist(token: string, playlistId: string): Promise<Si
 
           simplifiedTracks.push({
               id: PlaylistTrackObject.track.id,
+              external_urls: PlaylistTrackObject.track.external_urls,
               uri: PlaylistTrackObject.track.uri,
               duration_ms: PlaylistTrackObject.track.duration_ms,
               name: PlaylistTrackObject.track.name,

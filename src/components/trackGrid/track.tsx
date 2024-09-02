@@ -13,7 +13,7 @@ interface TrackProps {
 
 export const TrackCard: React.FC<TrackProps> = ({ track, removeTrack, selectedFeatures, onPlay, isOwner }) => {
     const [isHovered, setIsHovered] = useState(false);
-
+    console.log(track)
     const getFeatureValue = (feature: string) => {
         if (!track.audioFeatures) return "N/A";
         return track.audioFeatures[feature as keyof typeof track.audioFeatures]?.toFixed(2) || "N/A";
@@ -30,7 +30,14 @@ export const TrackCard: React.FC<TrackProps> = ({ track, removeTrack, selectedFe
             <div className="col-span-2 flex items-center">
                 <img src={track.album.images[0].url} alt="Cover" style={{ width: 50, height: 50 }} className="flex-none"/>
                 <div className="ml-2 overflow-hidden">
-                    <h3 className="text-lg font-bold whitespace-nowrap overflow-hidden text-ellipsis">{track.name}</h3>
+                    <a 
+                        className="text-lg font-bold block whitespace-nowrap overflow-hidden text-ellipsis hover:italic"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={track.external_urls['spotify']}
+                    >
+                        {track.name}
+                    </a>
                     <p className="text-sm text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">{track.artists.map(artist => artist.name).join(', ')}</p>
                 </div>
             </div>

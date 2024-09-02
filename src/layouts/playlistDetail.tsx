@@ -95,6 +95,7 @@ export const PlaylistDetailLayout: React.FC = () => {
                 owner={playlist.owner.display_name || "<anonymous>"}
                 trackCount={trackCount}
                 totalDuration={totalDuration}
+                playlistURL={playlist.external_urls['spotify']}
             />
             <TrackGrid 
                 tracks={playlist.tracks} 

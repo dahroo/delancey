@@ -94,6 +94,7 @@ export interface Playlists_tracks_items {
 
 export interface SimplifiedPlaylist {
   description: string | null;
+  external_urls: ExternalUrl
   images: Image[];
   name: string;
   owner: SimpleOwner;

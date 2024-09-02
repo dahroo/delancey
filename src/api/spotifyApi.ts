@@ -85,7 +85,7 @@ export async function getPlaylist(token: string, playlistId: string): Promise<Si
           headers: { Authorization: `Bearer ${token}` },
       });
 
-      const { description, images, name, owner, tracks } = response.data;
+      const { description, images, name, owner, tracks, external_urls } = response.data;
 
       const simplifiedOwner = {
           display_name: owner.display_name,
@@ -118,6 +118,7 @@ export async function getPlaylist(token: string, playlistId: string): Promise<Si
 
       return {
           description,
+          external_urls,
           images,
           name,
           owner: simplifiedOwner,

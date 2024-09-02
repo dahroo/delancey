@@ -1,7 +1,6 @@
 import React from 'react';
 import LogoutButton from './logoutButton';
-import { getSpotifyProfile } from '../../api/spotifyApi';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../../app/contexts/authContext';
 import { PlaybackContext } from '../../app/contexts/playbackContext';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -10,8 +9,7 @@ import { HomeButton } from './homeButton';
 
 
 const Navbar: React.FC = () => {
-  const [profile, setProfile] = useState<SpotifyApi.CurrentUsersProfileResponse | null>(null);
-  const { token } = useContext(AuthContext);
+  const { profile } = useContext(AuthContext);
   const { 
     currentTrack,
     isPlaying,
@@ -40,11 +38,7 @@ const Navbar: React.FC = () => {
     return "good evening";
   };
 
-  useEffect(() => {
-    getSpotifyProfile().then((data) => {
-      setProfile(data ?? null); 
-    });
-  }, [token]); 
+
 
   if (!profile) return <div>guest</div>;
 

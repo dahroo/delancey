@@ -19,7 +19,7 @@ const Landing: React.FC = () => {
         </p>
 
         <p className='mt-7'> 
-          delancey is open-source.
+          delancey is <a href='https://github.com/dahroo/delancey' className='text-gray-700 hover:italic'>open-source.</a>
         </p>
       </div>
       <ConnectButton />

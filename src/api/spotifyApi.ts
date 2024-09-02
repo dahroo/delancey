@@ -47,6 +47,18 @@ export async function getSpotifyProfile(): Promise<SpotifyApi.CurrentUsersProfil
   return callSpotifyApi(api => api.getMe().then(response => response.body));
 }
 
+export async function removeTrackFromPlaylist(playlistId: string, trackId: string): Promise<SpotifyApi.RemoveTracksFromPlaylistResponse | null> {
+  const result = await callSpotifyApi(api => 
+    api.removeTracksFromPlaylist(playlistId, [{ uri: `spotify:track:${trackId}` }])
+      .then(response => response.body)
+  );
+  if (result === null) {
+    console.error('Failed to remove track from playlist');
+    return null;
+  }
+  return result;
+}
+
 
 export async function getUserPlaylists(token: string): Promise<PlaylistPreview[] | null> {
 
@@ -152,35 +164,4 @@ export async function getPlaylist(token: string, playlistId: string): Promise<Si
   }
 }
 
-export async function deletePlaylistItem(token: string, playlistId: string, itemId: string): Promise<boolean> {
-  const url = `${apiEndpoint}/playlists/${playlistId}/tracks`;
-  const data = {
-    tracks: [{ uri: `spotify:track:${itemId}` }]
-  };
-  try {
-    const response = await axios.delete(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      data: data // In axios.delete, data must be passed in the options object
-    });
-    return response.status === 200; // Or check for other appropriate success status codes based on Spotify's API
-  } catch (error) {
-    console.error('Error removing track from playlist:', error);
-    return false;
-  }
-}
-
-export const getCurrentUser = async (token: string): Promise<string> => {
-  try {
-    const response = await axios.get('https://api.spotify.com/v1/me', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return response.data.id;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    throw error;
-  }
-};
 

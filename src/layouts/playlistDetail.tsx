@@ -7,7 +7,7 @@ import { SimplifiedPlaylist, Playlists_TrackObject } from '../api/types';
 import { PlaylistHeader } from '../components/playlistHeader/playlistHeader';
 import { TrackGrid } from '../components/trackGrid/trackGrid';
 import { formatDuration } from '../utils/utils';
-import { deletePlaylistItem } from '../api/spotifyApi';
+import { removeTrackFromPlaylist } from '../api/spotifyApi';
 
 const getTrackCount = (tracks: Playlists_TrackObject[] ) => tracks.length;
 
@@ -66,7 +66,7 @@ export const PlaylistDetailLayout: React.FC = () => {
 
         // Perform the actual API call
         try {
-            await deletePlaylistItem(token, playlistId, trackId);
+            await removeTrackFromPlaylist(playlistId, trackId);
         } catch (error) {
             console.error('Error removing track:', error);
             // If the API call fails, revert the optimistic update

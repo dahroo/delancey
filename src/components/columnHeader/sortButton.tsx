@@ -13,10 +13,10 @@ interface SortButtonProps {
 export const SortButton: React.FC<SortButtonProps> = ({ label, column, currentSort, currentOrder, onClick }) => {
   return (
     <button
-      className="flex items-center w-full hover:italic hover:font-bold"
+      className="flex items-center w-full flex-grow min-w-0 hover:italic hover:font-bold"
       onClick={() => onClick(column)}
     >
-      <p className='mr-2'>{label}</p>
+      <p className='mr-2 truncate'>{label}</p>
       {currentSort === column && (
         currentOrder === 'asc' ? <FaChevronUp/>: <FaChevronDown/>
       )}

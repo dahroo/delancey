@@ -33,13 +33,13 @@ export const SelectSortButton: React.FC<SelectSortButtonProps> = ({
     <div className="flex flex-col relative">
       <div className="flex flex-row">
         <button
-          className="items-center text-left hover:italic hover:font-bold"
+          className="flex-grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap items-center text-left hover:italic hover:font-bold"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span>{label}</span>
+          <span className=''>{label}</span>
         </button>
         <button
-          className="items-center hover:bg-gray-100 pl-2 pr-2"
+          className="items-center hover:bg-gray-100 pl-2 pr-2 flex-shrink-0"
           onClick={() => onSort(column)}
         >
           {renderSortIcon()}
@@ -47,7 +47,7 @@ export const SelectSortButton: React.FC<SelectSortButtonProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute flex flex-col z-10 bg-white border-b border-l border-r border-black w-full">
+        <div className="absolute min-w-[139px] flex flex-col z-10 bg-white border-b border-l border-r border-black w-full">
           {options.map((option) => (
             <button
               key={option}

@@ -22,15 +22,16 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   onSelectFeature,
   selectedFeatures
 }) => {
+
   return (
     <div className="grid grid-cols-10 items-center border border-black sticky top-0 bg-white">
-      <div className="col-span-2 pl-1">
+      <div className={`col-span-2 pl-1`}>
         <SortButton label="track" column="name" currentSort={currentSort} currentOrder={currentOrder} onClick={onSort} />
       </div>
       {[0, 1, 2].map((index) => (
-        <div key={index} className="col-span-1">
+        <div key={index} className={`col-span-1`}>
           <SelectSortButton
-            label={selectedFeatures[index] || "<select a feature>"}
+            label={selectedFeatures[index] || "<select>"}
             column={selectedFeatures[index]}
             currentSort={currentSort}
             currentOrder={currentOrder}

@@ -19,7 +19,8 @@ const Landing: React.FC = () => {
         </p>
 
         <p className='mt-7'> 
-          delancey is <a href='https://github.com/dahroo/delancey' className='text-gray-700 hover:italic'>open-source.</a>
+          delancey is <a href='https://github.com/dahroo/delancey' className='text-gray-700 hover:italic'>open-source. </a>
+          at the moment, delancey is only available for spotify premium users.
         </p>
       </div>
       <ConnectButton />

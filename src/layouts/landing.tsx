@@ -5,7 +5,7 @@ import HoverIcon from '../components/landing/hoverIcon';
 
 const Landing: React.FC = () => {
   return (
-    <div className='flex flex-col items-center justify-center ml-3 mr-3'>
+    <div className='flex flex-col items-center justify-center ml-3 mr-3 mb-48'>
       <h1 className='text-5xl mt-48'>delancey</h1>
 
       <div className='max-w-[400px] text-justify mt-7'>

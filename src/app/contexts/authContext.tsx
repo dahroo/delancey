@@ -56,46 +56,55 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   }, [logout]);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      const storedToken = localStorage.getItem('spotify_access_token');
-      const expirationTime = localStorage.getItem('token_expiration');
-      
-      if (storedToken && expirationTime) {
-        const currentTime = new Date().getTime();
-        if (currentTime < parseInt(expirationTime)) {
-          setToken(storedToken);
-          if (!profile) {
-            getSpotifyProfile().then((data) => {
-              if (data) {
-                setProfile(data);
-              } else {
-                console.log("Failed to fetch profile data");
-                setProfile(null);
-              }
-            });
-          } 
-        } else {
-          await refreshToken();
-        }
+    const storedToken = localStorage.getItem('spotify_access_token');
+    const expirationTime = localStorage.getItem('token_expiration');
+
+    if (storedToken && expirationTime) {
+      const currentTime = new Date().getTime();
+      if (currentTime < parseInt(expirationTime)) {
+        setToken(storedToken);
+        if (!profile) {
+          getSpotifyProfile().then((data) => {
+            if (data) {
+              setProfile(data);
+            } else {
+              console.log("Failed to fetch profile data");
+              setProfile(null);
+            }
+          });
+        } 
+      } else {
+        refreshToken();
       }
-      setLoading(false);
-    };
-
-    initializeAuth();
-
-    // Set up a timer to refresh the token 5 minutes before it expires
-    const refreshTimer = setInterval(() => {
-      const expirationTime = localStorage.getItem('token_expiration');
-      if (expirationTime) {
-        const timeUntilExpiration = parseInt(expirationTime) - new Date().getTime();
-        if (timeUntilExpiration < 300000) { // 5 minutes in milliseconds
-          refreshToken();
-        }
-      }
-    }, 600000); // Check every 10 minutes
-
-    return () => clearInterval(refreshTimer);
+    }
+    setLoading(false);
   }, [refreshToken, profile]);
+
+  useEffect(() => {
+    if (token) {
+      const expirationTime = new Date().getTime() + 3600 * 1000; // 1 hour from now
+      localStorage.setItem('token_expiration', expirationTime.toString());
+
+      if (!profile) {
+        getSpotifyProfile().then((data) => {
+          if (data) {
+            setProfile(data);
+          } else {
+            console.log("Failed to fetch profile data");
+            setProfile(null);
+          }
+        });
+      } 
+
+      // Set up a timer to refresh the token 5 minutes before it expires
+      const refreshTimer = setTimeout(() => {
+        refreshToken();
+      }, 3300 * 1000); // 55 minutes
+
+      return () => clearTimeout(refreshTimer);
+    }
+  }, [token, refreshToken, profile]);
+
 
   return (
     <AuthContext.Provider value={{ token, setToken, loading, logout, profile }}>

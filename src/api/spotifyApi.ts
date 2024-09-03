@@ -68,13 +68,19 @@ export async function getUserPlaylists(token: string): Promise<PlaylistPreview[]
     });
 
     const playlists = response.data.items.map((item: SimplifiedPlaylistObject): PlaylistPreview => {
-      const largestImage = item.images.reduce((largest: Image | null, image: Image) => {
-        return (!largest || image.width > largest.width) ? image : largest;
-      }, null);
+      let imageUrl = '';
+      
+      if (item.images && item.images.length > 0) {
+        const largestImage = item.images.reduce((largest: Image | null, image: Image) => {
+          return (!largest || image.width > largest.width) ? image : largest;
+        }, null);
+        
+        imageUrl = largestImage ? largestImage.url : '';
+      }
 
       return {
         id: item.id,
-        imageUrl: largestImage ? largestImage.url : '', // In case there are no images, return an empty string.
+        imageUrl: imageUrl,
         name: item.name,
         ownerDisplayName: item.owner.display_name || 'anonymous'
       };
@@ -86,6 +92,8 @@ export async function getUserPlaylists(token: string): Promise<PlaylistPreview[]
     return null;
   }
 }
+
+
 
 export async function getAudioFeatures(token: string, trackId: string): Promise<TrackAudioFeatures | null> {
   try {

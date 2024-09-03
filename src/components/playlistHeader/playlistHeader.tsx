@@ -12,7 +12,7 @@ interface PlaylistHeaderProps {
 
 export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({name, description, image, owner, trackCount, totalDuration, playlistURL}) => {
     return (
-        <div className="flex border border-black w-full overflow-hidden">
+        <div className="flex border border-black w-full min-h-[100px] overflow-hidden">
             <div className="flex flex-row items-center gap-2 overflow-hidden w-full">
                 <img src={image} alt="Playlist cover" style={{ width: 100, height: 100 }} className="flex-none"/>
                 <div className="flex flex-col overflow-hidden w-full">

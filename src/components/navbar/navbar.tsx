@@ -43,9 +43,9 @@ const Navbar: React.FC = () => {
   if (!profile) return <div>guest</div>;
 
   return (
-    <nav className='row-span-1 w-full grid grid-rows-[auto_auto_1fr] gap-px border-b-2 border-black'>
+    <nav className='row-span-1 w-full grid grid-rows-[auto_auto_1fr] border-b-2 border-black'>
       {/*profile*/}
-      <div className='flex flex-row justify-between bg-white pl-1 pr-2'>
+      <div className='flex flex-row justify-between bg-white pl-1 pr-2 border-b border-black'>
         <p>{getGreeting()}, {profile.display_name}</p>
         <div className='flex flex-row'>
           <HomeButton />
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
       </div>
       {/*song name/controls*/}
       {currentTrack && (
-        <div className='flex items-center bg-white pl-1 pr-1'>
+        <div className='flex items-center bg-white pl-1 pr-1 border-b border-black'>
           <div className="mr-4">
             {currentTrack.name} - {currentTrack.artists.join(', ')}
           </div>

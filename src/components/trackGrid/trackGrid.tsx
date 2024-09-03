@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { TrackCard } from './track';
 import { Playlists_TrackObject } from '../../api/types';
 import { ColumnHeader } from '../columnHeader/columnHeader';
+import { Footer } from '../footer/footer';
 
 interface TrackGridProps {
   tracks: Playlists_TrackObject[];
@@ -95,6 +96,7 @@ export const TrackGrid: React.FC<TrackGridProps> = ({ tracks, onTrackRemoved, on
             />
         ))}
       </div>
+      <Footer/>
     </div>
   );
 };

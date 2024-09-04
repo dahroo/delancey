@@ -13,7 +13,6 @@ interface TrackProps {
 
 export const TrackCard: React.FC<TrackProps> = ({ track, removeTrack, selectedFeatures, onPlay, isOwner }) => {
     const [isHovered, setIsHovered] = useState(false);
-    console.log(track)
     const getFeatureValue = (feature: string) => {
         if (!track.audioFeatures) return "N/A";
         return track.audioFeatures[feature as keyof typeof track.audioFeatures]?.toFixed(2) || "N/A";

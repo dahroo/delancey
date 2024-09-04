@@ -1,12 +1,10 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { exchangeCodeForToken } from './spotifyAuth';
-import { AuthContext } from '../app/contexts/authContext';
 
 const SpotifyCallback: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setToken } = useContext(AuthContext);
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -16,7 +14,7 @@ const SpotifyCallback: React.FC = () => {
       if (code) {
         const accessToken = await exchangeCodeForToken(code);
         if (accessToken) {
-          setToken(accessToken);
+          localStorage.setItem("spotify_access_token", accessToken);
           // Token exchange successful
           console.log('Access token obtained bruv');
           // Navigate to a success page or your app's main page
@@ -34,7 +32,7 @@ const SpotifyCallback: React.FC = () => {
       }
     };
     handleCallback();
-  }, [navigate, location, setToken]);
+  }, [navigate, location]);
 
   return <div>loading...</div>;
 };

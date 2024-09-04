@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSpotifyProfile } from '../../api/spotifyApi';
+import { disconnectPlayer } from '../../api/playbackSDK';
 
 interface AuthContextType {
   token: string | null;
@@ -28,6 +29,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     setToken(null);
     setProfile(null);
     navigate('/');
+    disconnectPlayer();
   }, [navigate]);
 
   useEffect(() => {

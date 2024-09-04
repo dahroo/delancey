@@ -93,24 +93,6 @@ export const getPlaybackState = async (): Promise<Spotify.PlaybackState | null> 
   return await player.getCurrentState();
 };
 
-export const stopPlayback = async (token: string): Promise<void> => {
-  if (deviceId) {
-    try {
-      await axios.put(
-        `https://api.spotify.com/v1/me/player/pause?device_id=${deviceId}`,
-        {},
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Error stopping playback:', error);
-    }
-  }
-};
-
 export const disconnectPlayer = async (): Promise<void> => {
   if (player) {
     player.disconnect();

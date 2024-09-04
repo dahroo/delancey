@@ -13,15 +13,15 @@ export const PlaylistPreviewCard: React.FC<PlaylistPreviewCardProps> = ({ playli
     return (
         <div className="grid grid-rows-4 min-w-[200px] w-full h-full border-2 border-black group cursor-pointer"
              onClick={handleCardClick}>
-            <div className="row-span-3 min-w-[200px] min-h-[200px]">
+            <div className="row-span-3 relative w-full pb-[100%]">
                 {playlist.imageUrl ? (
                     <img 
                         src={playlist.imageUrl} 
                         alt={`Cover for ${playlist.name}`} 
-                        className="w-full h-full object-cover" 
+                        className="absolute top-0 left-0 w-full h-full object-cover" 
                     />
                 ) : (
-                    <div className="w-full h-full bg-black" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-black" />
                 )}
             </div>
             <div className="row-span-1 bg-gray-100 flex flex-col justify-center items-center group-hover:bg-gray-300">

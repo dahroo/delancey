@@ -12,6 +12,7 @@ import { removeTrackFromPlaylist } from '../api/spotifyApi';
 const getTrackCount = (tracks: Playlists_TrackObject[] ) => tracks.length;
 
 const getTotalDuration = ( tracks: Playlists_TrackObject[] ) => {
+    if(tracks.length === 0) return 0;
     return tracks.reduce((total, track) => total + track.duration_ms, 0);
 };
 
@@ -80,6 +81,10 @@ export const PlaylistDetailLayout: React.FC = () => {
 
     if (!playlistId) {
         return <div>Playlist ID is missing.</div>;
+    }
+
+    if (playlist.tracks.length === 0) {
+        return <div className='justify-center w-full h-full flex flex-row items-center'>empty playlist! add songs on spotify.</div>;
     }
 
     const trackCount = getTrackCount(playlist.tracks);

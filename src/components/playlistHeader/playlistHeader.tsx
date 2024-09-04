@@ -8,9 +8,19 @@ interface PlaylistHeaderProps {
     trackCount: number;
     totalDuration: string;
     playlistURL: string;
+    onRefresh: () => void;
 }
 
-export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({name, description, image, owner, trackCount, totalDuration, playlistURL}) => {
+export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
+    name, 
+    description, 
+    image, 
+    owner, 
+    trackCount, 
+    totalDuration, 
+    playlistURL,
+    onRefresh
+}) => {
     return (
         <div className="flex border border-black w-full min-h-[100px] overflow-hidden">
             <div className="flex flex-row items-center gap-2 overflow-hidden w-full">
@@ -21,7 +31,11 @@ export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({name, description
                     <p className="text-sm">{trackCount} tracks, {totalDuration}</p>
                     <div className="flex flex-row justify-between items-center">
                         <p className="text-sm">c.o. {owner}</p>
-                        <FaSpotify className="mr-3 ml-3"/>
+                        <div className="flex flex-row items-center">
+                            <button onClick={onRefresh} className="hover:italic hover:font-bold">REFRESH PLAYLIST</button>
+                            <FaSpotify className="mr-3 ml-3"/>
+                        </div>
+
                     </div>
                     
                 </div>

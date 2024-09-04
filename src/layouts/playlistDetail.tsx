@@ -16,11 +16,23 @@ const getTotalDuration = ( tracks: Playlists_TrackObject[] ) => {
     return tracks.reduce((total, track) => total + track.duration_ms, 0);
 };
 
+const cacheKey = (playlistId: string) => `playlist_${playlistId}`;
+
+const getCachedPlaylist = (playlistId: string): SimplifiedPlaylist | null => {
+    const cached = localStorage.getItem(cacheKey(playlistId));
+    return cached ? JSON.parse(cached) : null;
+};
+
+const setCachedPlaylist = (playlistId: string, playlist: SimplifiedPlaylist) => {
+    localStorage.setItem(cacheKey(playlistId), JSON.stringify(playlist));
+};
+
 export const PlaylistDetailLayout: React.FC = () => {
     const { playlistId } = useParams<{ playlistId: string | undefined }>();
     const [playlist, setPlaylist] = useState<SimplifiedPlaylist | null>();
     const { token, logout, profile } = useContext(AuthContext);
     const { handlePlayTrackInContext } = useContext(PlaybackContext)
+    const [isLoading, setIsLoading] = useState(false);
 
     const handlePlayTrack = useCallback((trackUri: string) => {
         if (!token) {
@@ -33,37 +45,52 @@ export const PlaylistDetailLayout: React.FC = () => {
         }
     }, [playlist, playlistId, token, logout, handlePlayTrackInContext]);
 
-    const fetchPlaylistDetails = useCallback(async () => {
+    const fetchPlaylistDetails = useCallback(async (forceRefresh: boolean = false) => {
         if (!token) {
             console.error('Authentication error: Token is missing');
             logout();
-            return; 
+            return;
         }
         if (playlistId) {
+            setIsLoading(true);
             try {
-                const fetchedPlaylist = await getPlaylist(token, playlistId);
+                let fetchedPlaylist: SimplifiedPlaylist | null = null;
+                if (!forceRefresh) {
+                    fetchedPlaylist = getCachedPlaylist(playlistId);
+                }
+                if (!fetchedPlaylist) {
+                    fetchedPlaylist = await getPlaylist(token, playlistId);
+                    if(fetchedPlaylist) {
+                        setCachedPlaylist(playlistId, fetchedPlaylist);
+                    }
+                }
                 setPlaylist(fetchedPlaylist);
             } catch (error) {
                 console.error('Error fetching playlist:', error);
+            } finally {
+                setIsLoading(false);
             }
         }
-    }, [playlistId, token, logout]);  
+    }, [playlistId, token, logout]);
 
     useEffect(() => {
         fetchPlaylistDetails();
-    }, [fetchPlaylistDetails]); 
+    }, [fetchPlaylistDetails]);
+
+    const handleRefresh = () => {
+        fetchPlaylistDetails(true);
+    };
 
     const handleTrackRemoved = useCallback(async (trackId: string) => {
         if (!playlist || !playlistId || !token) return;
 
         // Optimistically update the UI
-        setPlaylist(prevPlaylist => {
-            if (!prevPlaylist) return null;
-            return {
-                ...prevPlaylist,
-                tracks: prevPlaylist.tracks.filter(track => track.id !== trackId)
-            };
-        });
+        const updatedPlaylist = {
+            ...playlist,
+            tracks: playlist.tracks.filter(track => track.id !== trackId)
+        };
+        setPlaylist(updatedPlaylist);
+        setCachedPlaylist(playlistId, updatedPlaylist);
 
         // Perform the actual API call
         try {
@@ -75,12 +102,15 @@ export const PlaylistDetailLayout: React.FC = () => {
         }
     }, [playlist, playlistId, token, fetchPlaylistDetails]);
 
+    if (isLoading) {
+        return <div className='justify-center w-full h-full flex flex-row items-center'>loading... (this can take a while! rate limits, sorry.)</div>;
+    }
     if (!playlist) {
-        return <div className='justify-center w-full h-full flex flex-row items-center'>loading...</div>;
+        return <div className='justify-center w-full h-full flex flex-row items-center'>error: playlist not found.</div>;
     }
 
     if (!playlistId) {
-        return <div>Playlist ID is missing.</div>;
+        return <div>playlist id is missing.</div>;
     }
 
     if (playlist.tracks.length === 0) {
@@ -101,6 +131,7 @@ export const PlaylistDetailLayout: React.FC = () => {
                 trackCount={trackCount}
                 totalDuration={totalDuration}
                 playlistURL={playlist.external_urls['spotify']}
+                onRefresh={handleRefresh}
             />
             <TrackGrid 
                 tracks={playlist.tracks} 

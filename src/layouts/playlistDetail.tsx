@@ -16,16 +16,6 @@ const getTotalDuration = ( tracks: Playlists_TrackObject[] ) => {
     return tracks.reduce((total, track) => total + track.duration_ms, 0);
 };
 
-const cacheKey = (playlistId: string) => `playlist_${playlistId}`;
-
-const getCachedPlaylist = (playlistId: string): SimplifiedPlaylist | null => {
-    const cached = localStorage.getItem(cacheKey(playlistId));
-    return cached ? JSON.parse(cached) : null;
-};
-
-const setCachedPlaylist = (playlistId: string, playlist: SimplifiedPlaylist) => {
-    localStorage.setItem(cacheKey(playlistId), JSON.stringify(playlist));
-};
 
 export const PlaylistDetailLayout: React.FC = () => {
     const { playlistId } = useParams<{ playlistId: string | undefined }>();
@@ -45,7 +35,7 @@ export const PlaylistDetailLayout: React.FC = () => {
         }
     }, [playlist, playlistId, token, logout, handlePlayTrackInContext]);
 
-    const fetchPlaylistDetails = useCallback(async (forceRefresh: boolean = false) => {
+    const fetchPlaylistDetails = useCallback(async () => {
         if (!token) {
             console.error('Authentication error: Token is missing');
             logout();
@@ -54,17 +44,9 @@ export const PlaylistDetailLayout: React.FC = () => {
         if (playlistId) {
             setIsLoading(true);
             try {
-                let fetchedPlaylist: SimplifiedPlaylist | null = null;
-                if (!forceRefresh) {
-                    fetchedPlaylist = getCachedPlaylist(playlistId);
-                }
-                if (!fetchedPlaylist) {
-                    fetchedPlaylist = await getPlaylist(playlistId);
-                    if(fetchedPlaylist) {
-                        setCachedPlaylist(playlistId, fetchedPlaylist);
-                    }
-                }
+                const fetchedPlaylist = await getPlaylist(playlistId);
                 setPlaylist(fetchedPlaylist);
+
             } catch (error) {
                 console.error('Error fetching playlist:', error);
             } finally {
@@ -77,10 +59,6 @@ export const PlaylistDetailLayout: React.FC = () => {
         fetchPlaylistDetails();
     }, [fetchPlaylistDetails]);
 
-    const handleRefresh = () => {
-        fetchPlaylistDetails(true);
-    };
-
     const handleTrackRemoved = useCallback(async (trackId: string) => {
         if (!playlist || !playlistId || !token) return;
 
@@ -90,7 +68,6 @@ export const PlaylistDetailLayout: React.FC = () => {
             tracks: playlist.tracks.filter(track => track.id !== trackId)
         };
         setPlaylist(updatedPlaylist);
-        setCachedPlaylist(playlistId, updatedPlaylist);
 
         // Perform the actual API call
         try {
@@ -131,7 +108,6 @@ export const PlaylistDetailLayout: React.FC = () => {
                 trackCount={trackCount}
                 totalDuration={totalDuration}
                 playlistURL={playlist.external_urls['spotify']}
-                onRefresh={handleRefresh}
             />
             <TrackGrid 
                 tracks={playlist.tracks} 

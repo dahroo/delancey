@@ -12,16 +12,12 @@ const Landing: React.FC = () => {
         <p className='italic text-gray-700'>"I saw the angel in the marble and carved until I set him free." -- Michelangelo</p>
 
         <p className='mt-7'>the missing link between spotify and your perfect set. </p>
-        <p> sort your playlists by bpm and tempo, amongst other features. </p>
+        <p> sort your playlists by bpm, tempo, danceability, and much more.</p>
 
         <p className='mt-7'> 
-          delancey is best used reductively - pruning playlists into coherence, rather than building coherence from scratch.
-        </p>
-
-        <p className='mt-7'> 
-          delancey is <a href='https://github.com/dahroo/delancey' target="_blank" rel="noopener noreferrer" className='text-gray-700 hover:italic'>open-source. </a>
+          delancey is best on desktop/pc. delancey is <a href='https://github.com/dahroo/delancey' target="_blank" rel="noopener noreferrer" className='text-blue-500 hover:italic'>open-source. </a>
           at the moment, delancey is in beta and only available with spotify premium.
-          contact <a href='https://x.com/zzblyx' target="_blank" rel="noopener noreferrer" className='text-gray-700 hover:italic'>@zzblyx</a> to register.
+          contact <a href='https://x.com/zzblyx' target="_blank" rel="noopener noreferrer" className='text-blue-500 hover:italic'>@zzblyx</a> to register.
         </p>
       </div>
       <ConnectButton />

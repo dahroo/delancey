@@ -30,7 +30,7 @@ export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
                     <p className="text-sm">{description}</p>
                     <p className="text-sm">{trackCount} tracks, {totalDuration}</p>
                     <div className="flex flex-row justify-between items-center">
-                        <p className="text-sm">c.o. {owner}</p>
+                        <p className="text-sm">{owner}</p>
                         <div className="flex flex-row items-center">
                             <button onClick={onRefresh} className="hover:italic hover:font-bold">REFRESH PLAYLIST</button>
                             <FaSpotify className="mr-3 ml-3"/>

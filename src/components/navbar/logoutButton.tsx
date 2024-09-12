@@ -1,6 +1,7 @@
 import React from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../app/contexts/authContext';
+import { IoLogOut } from "react-icons/io5";
 
 const LogoutButton: React.FC = () => {
   const { logout } = useContext(AuthContext)
@@ -10,8 +11,10 @@ const LogoutButton: React.FC = () => {
   };
 
   return (
-    <button onClick={handleLogout} className='ml-5 hover:italic hover:font-bold'>
-      log out
+    <button 
+      onClick={handleLogout} 
+      className='ml-3 flex items-center justify-center rounded-full bg-black p-3 text-white transition-all duration-300 ease-in-out hover:bg-red-700'>
+      <IoLogOut />
     </button>
   );
 };

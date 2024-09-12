@@ -22,17 +22,9 @@ export interface SimplifiedArtist {
   name: string;
 }
 interface SimplifiedAlbum {
-  images: Image[];
+  images: SpotifyApi.ImageObject[];
   name: string;
 }
-
-
-export interface Image {
-  url: string;
-  height: number;
-  width: number;
-}
-
 export interface SpotifyUserProfile {
   country: string;
   display_name: string;
@@ -45,7 +37,7 @@ export interface SpotifyUserProfile {
   followers: { href: string; total: number; };
   href: string;
   id: string;
-  images: Image[];
+  images: SpotifyApi.ImageObject[];
   product: string;
   type: string;
   uri: string;
@@ -64,7 +56,7 @@ export interface SimplifiedPlaylistObject {
   external_urls: ExternalUrl;
   href: string;
   id: string;
-  images: Image[];
+  images: SpotifyApi.ImageObject[];
   name: string;
   owner: PlaylistOwner;
   public: boolean | null;
@@ -96,7 +88,7 @@ export interface Playlists_tracks_items {
 export interface SimplifiedPlaylist {
   description: string | null;
   external_urls: ExternalUrl
-  images: Image[];
+  images: SpotifyApi.ImageObject[];
   name: string;
   owner: SimpleOwner;
   tracks: Playlists_TrackObject[];
@@ -104,7 +96,7 @@ export interface SimplifiedPlaylist {
 
 interface SimpleOwner {
   id: string;
-  display_name: string | null;
+  display_name: string | undefined;
 }
 
 export interface TrackAudioFeatures {

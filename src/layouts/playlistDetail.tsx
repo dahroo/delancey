@@ -59,7 +59,7 @@ export const PlaylistDetailLayout: React.FC = () => {
                     fetchedPlaylist = getCachedPlaylist(playlistId);
                 }
                 if (!fetchedPlaylist) {
-                    fetchedPlaylist = await getPlaylist(token, playlistId);
+                    fetchedPlaylist = await getPlaylist(playlistId);
                     if(fetchedPlaylist) {
                         setCachedPlaylist(playlistId, fetchedPlaylist);
                     }
@@ -103,7 +103,7 @@ export const PlaylistDetailLayout: React.FC = () => {
     }, [playlist, playlistId, token, fetchPlaylistDetails]);
 
     if (isLoading) {
-        return <div className='justify-center w-full h-full flex flex-row items-center'>loading... (this can take a while! rate limits, sorry.)</div>;
+        return <div className='justify-center w-full h-full flex flex-row items-center'>loading... </div>;
     }
     if (!playlist) {
         return <div className='justify-center w-full h-full flex flex-row items-center'>error: playlist not found.</div>;

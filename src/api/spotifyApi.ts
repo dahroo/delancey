@@ -2,9 +2,6 @@ import axios from 'axios';
 import {
         PlaylistPreview, 
         SimplifiedPlaylistObject, 
-        Image, 
-
-        SimplifiedArtist,
         SimplifiedPlaylist,
         Playlists_TrackObject,
         TrackAudioFeatures
@@ -39,10 +36,6 @@ async function callSpotifyApi<T>(
 
 const apiEndpoint = 'https://api.spotify.com/v1';
 
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export async function getSpotifyProfile(): Promise<SpotifyApi.CurrentUsersProfileResponse | null> {
   return callSpotifyApi(api => api.getMe().then(response => response.body));
 }
@@ -71,11 +64,19 @@ export async function getUserPlaylists(token: string): Promise<PlaylistPreview[]
       let imageUrl = '';
       
       if (item.images && item.images.length > 0) {
-        const largestImage = item.images.reduce((largest: Image | null, image: Image) => {
-          return (!largest || image.width > largest.width) ? image : largest;
+        const largestImage = item.images.reduce((largest: SpotifyApi.ImageObject | null, image: SpotifyApi.ImageObject) => {
+          // If the current image has no width, consider it as width 0
+          const currentWidth = image.width ?? 0;
+          
+          // If there's no largest image yet, or if the current image is wider
+          if (!largest || currentWidth > (largest.width ?? 0)) {
+            return image;
+          }
+          
+          return largest;
         }, null);
-        
-        imageUrl = largestImage ? largestImage.url : '';
+      
+        imageUrl = largestImage?.url ?? '';
       }
 
       return {
@@ -120,52 +121,81 @@ export async function getAudioFeatures(token: string, trackId: string): Promise<
   }
 }
 
-export async function getPlaylist(token: string, playlistId: string): Promise<SimplifiedPlaylist | null> {
+export async function getPlaylist(playlistId: string): Promise<SimplifiedPlaylist | null> {
+
+
   try {
-      const response = await axios.get(`${apiEndpoint}/playlists/${playlistId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-      });
+    const playlist = await callSpotifyApi(api => 
+      api.getPlaylist(playlistId)
+        .then(response => response.body)
+    );
 
-      const { description, images, name, owner, tracks, external_urls } = response.data;
+    if (!playlist) {
+      console.error('Failed to fetch playlist');
+      return null;
+    }
+  
+    const { description, images, name, owner, tracks, external_urls } = playlist;
 
-      const simplifiedOwner = {
-          display_name: owner.display_name,
-          id: owner.id,
-      };
+    const simplifiedOwner = {
+      display_name: owner.display_name,
+      id: owner.id,
+    };
 
-      const simplifiedTracks: Playlists_TrackObject[] = [];
+    const trackIds = tracks.items
+    .map((item: SpotifyApi.PlaylistTrackObject) => item.track?.id)
+    .filter((id): id is string => id != null);
+  
+    const audioFeatures = await callSpotifyApi(api => 
+      api.getAudioFeaturesForTracks(trackIds)
+        .then(response => response.body)
+    );
 
-      for (const PlaylistTrackObject of tracks.items) {
-          await delay(200); // Delay before each API call to manage rate limits
+    if(!audioFeatures) {
+      console.error('Failed to fetch audio features');
+      return null;
+    }
 
-          const audioFeatures = await getAudioFeatures(token, PlaylistTrackObject.track.id);
+    const audioFeaturesMap = new Map(
+      audioFeatures.audio_features.map((feature: SpotifyApi.AudioFeaturesObject) => [feature.id, feature])
+    );
 
-          simplifiedTracks.push({
-              id: PlaylistTrackObject.track.id,
-              external_urls: PlaylistTrackObject.track.external_urls,
-              uri: PlaylistTrackObject.track.uri,
-              duration_ms: PlaylistTrackObject.track.duration_ms,
-              name: PlaylistTrackObject.track.name,
-              popularity: PlaylistTrackObject.track.popularity,
-              artists: PlaylistTrackObject.track.artists.map((artist: SimplifiedArtist) => ({
-                  name: artist.name
-              })),
-              album: {
-                  images: PlaylistTrackObject.track.album.images,
-                  name: PlaylistTrackObject.track.album.name
-              },
-              audioFeatures: audioFeatures
-          });
-      }
-
+    const simplifiedTracks: Playlists_TrackObject[] = tracks.items
+    .filter((item): item is SpotifyApi.PlaylistTrackObject & { track: NonNullable<SpotifyApi.PlaylistTrackObject['track']> } => 
+      item !== null && item.track !== null
+    )
+    .map((PlaylistTrackObject) => {
+      const track = PlaylistTrackObject.track;
+      const trackId = track.id;
+      const audioFeatures = audioFeaturesMap.get(trackId);
+  
       return {
-          description,
-          external_urls,
-          images,
-          name,
-          owner: simplifiedOwner,
-          tracks: simplifiedTracks
+        id: trackId ?? '',
+        external_urls: track.external_urls ?? {},
+        uri: track.uri ?? '',
+        duration_ms: track.duration_ms ?? 0,
+        name: track.name ?? '',
+        popularity: track.popularity ?? 0,
+        artists: (track.artists ?? []).map((artist) => ({
+          name: artist?.name ?? 'Unknown Artist'
+        })),
+        album: {
+          images: track.album?.images ?? [],
+          name: track.album?.name ?? 'Unknown Album'
+        },
+        audioFeatures: audioFeatures ?? null
       };
+    });
+
+    return {
+        description,
+        external_urls,
+        images,
+        name,
+        owner: simplifiedOwner,
+        tracks: simplifiedTracks
+    };
+
   } catch (error) {
       console.error('Error fetching playlist details:', error);
       return null;

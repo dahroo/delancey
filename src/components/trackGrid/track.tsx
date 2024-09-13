@@ -21,7 +21,7 @@ export const TrackCard: React.FC<TrackProps> = ({ track, removeTrack, selectedFe
     return (
         <div 
             id={track.id} 
-            className="grid grid-cols-10 gap-1 items-center border border-black hover:bg-gray-200 cursor-pointer"
+            className="grid grid-cols-10 gap-1 items-center bg-gray-200 hover:bg-gray-300 cursor-pointer mx-3 rounded-lg mb-1"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={() => onPlay(track.uri)}

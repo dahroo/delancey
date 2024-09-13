@@ -20,7 +20,7 @@ export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
     playlistURL,
 }) => {
     return (
-        <div className="flex border border-black w-full min-h-[100px] overflow-hidden">
+        <div className="flex min-h-[100px] overflow-hidden m-4 bg-gray-200 rounded-lg">
             <div className="flex flex-row items-center gap-2 overflow-hidden w-full">
                 <img src={image} alt="Playlist cover" style={{ width: 100, height: 100 }} className="flex-none"/>
                 <div className="flex flex-col overflow-hidden w-full">
@@ -30,7 +30,7 @@ export const PlaylistHeader: React.FC<PlaylistHeaderProps> = ({
                     <div className="flex flex-row justify-between items-center">
                         <p className="text-sm">{owner}</p>
                         <div className="flex flex-row items-center">
-                            <FaSpotify className="mr-3 ml-3"/>
+                            <FaSpotify size={20} className="mr-3 ml-3"/>
                         </div>
 
                     </div>

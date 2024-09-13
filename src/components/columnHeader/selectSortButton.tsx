@@ -58,7 +58,7 @@ export const SelectSortButton: React.FC<SelectSortButtonProps> = ({
   };
 
   return (
-    <div className="relative" ref={buttonRef}>
+    <div className="relative bg-gray-200 rounded-full" ref={buttonRef}>
       <div className="flex flex-row">
         <button
           className="flex-grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap items-center text-center bg-blue-700 text-white px-4 py-1 rounded-full hover:italic"
@@ -67,7 +67,7 @@ export const SelectSortButton: React.FC<SelectSortButtonProps> = ({
           <span className=''>{label}</span>
         </button>
         <button
-          className="items-center hover:bg-gray-100 rounded-full pl-2 pr-2 ml-1 flex-shrink-0"
+          className="items-center hover:bg-gray-300 rounded-full pl-2 pr-2 ml-1 flex-shrink-0"
           onClick={() => onSort(column)}
         >
           {renderSortIcon()}

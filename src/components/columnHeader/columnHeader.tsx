@@ -24,7 +24,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
 }) => {
 
   return (
-    <div className="grid grid-cols-10 items-center border border-black sticky top-0 bg-white">
+    <div className="grid grid-cols-10 items-center sticky top-0 bg-white mx-1">
       <div className='col-span-2 m-2'>
         <SortButton label="track" column="name" currentSort={currentSort} currentOrder={currentOrder} onClick={onSort} />
       </div>

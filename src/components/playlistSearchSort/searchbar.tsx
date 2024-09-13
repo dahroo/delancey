@@ -7,12 +7,12 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
   return (
-    <div className='w-full flex justify-center items-center'>
+    <div className='flex flex-grow justify-center items-center my-3 mx-3'>
       <input
         type="text"
         placeholder="search your playlists..."
         value={value}
-        className="flex flex-grow min-w-[400px] m-3 text-xl rounded-full bg-black text-white placeholder-gray-400 p-2 focus:outline-none focus:ring-0 pl-5"
+        className="flex flex-grow min-w-[300px] text-xl rounded-full bg-gray-200 text-black placeholder-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-blue-700 pl-5"
         onChange={(e) => onChange(e.target.value)}
       /> 
     </div>

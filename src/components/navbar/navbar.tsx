@@ -49,8 +49,8 @@ const Navbar: React.FC = () => {
       </div>
       
       {/* song name/controls */}
-      <div className='flex items-center bg-gray-200 rounded-full px-4 py-1 mb-2 mx-1'>
-        <div className="mr-4 truncate flex-grow">
+      <div className='flex items-center bg-gray-200 rounded-full px-4 py-1 mb-2 mx-1 min-w-0'>
+        <div className="mr-4 truncate flex-grow min-w-0">
           {currentTrack 
             ? `${currentTrack.name} - ${currentTrack.artists.join(', ')}`
             : "it's a bit quiet here. play a song to get started!"}

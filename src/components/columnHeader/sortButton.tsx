@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { FaChevronCircleDown, FaChevronCircleUp } from "react-icons/fa";
 
 
 interface SortButtonProps {
@@ -13,12 +13,12 @@ interface SortButtonProps {
 export const SortButton: React.FC<SortButtonProps> = ({ label, column, currentSort, currentOrder, onClick }) => {
   return (
     <button
-      className="flex items-center w-full flex-grow min-w-0 hover:italic hover:font-bold"
+      className="flex w-full bg-black text-white px-4 py-1 justify-center rounded-full items-center min-w-0 hover:italic"
       onClick={() => onClick(column)}
     >
-      <p className='mr-2 truncate'>{label}</p>
+      <p className='truncate mr-2'>{label}</p>
       {currentSort === column && (
-        currentOrder === 'asc' ? <FaChevronUp/>: <FaChevronDown/>
+        currentOrder === 'asc' ? <FaChevronCircleUp/>: <FaChevronCircleDown/>
       )}
     </button>
   );

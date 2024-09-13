@@ -42,25 +42,25 @@ export const TrackCard: React.FC<TrackProps> = ({ track, removeTrack, selectedFe
             </div>
             {/* User Chosen Features */}
             {selectedFeatures.map((feature, index) => (
-                <p key={index} className="col-span-1 text-sm">{getFeatureValue(feature)}</p>
+                <p key={index} className="col-span-1 text-sm text-center">{getFeatureValue(feature)}</p>
             ))}
             {/* Popularity */}
-            <p className="col-span-1 text-sm">{track.popularity}</p>
+            <p className="col-span-1 text-sm text-center">{track.popularity}</p>
             {/* Key + Mode */}
-            <p className="col-span-1 text-sm">
+            <p className="col-span-1 text-sm text-center">
                 {track.audioFeatures ? `${pitchClassToKey(track.audioFeatures.key)} 
                 ${track.audioFeatures.mode === 1 ? 'maj' : 'min'}` : "Key/Mode N/A"}
             </p>
             {/* BPM */}
-            <p className="col-span-1 text-sm">
+            <p className="col-span-1 text-sm text-center">
                 {track.audioFeatures ? track.audioFeatures.tempo.toFixed(1) : "BPM N/A"}
             </p>
             {/* Duration */}
-            <p className="col-span-1 text-sm">{formatDuration(track.duration_ms)}</p>
+            <p className="col-span-1 text-sm text-center">{formatDuration(track.duration_ms)}</p>
             {/* Remove */}
             {isOwner && (
                 <div 
-                    className="col-span-1 cursor-pointer text-sm hover:italic hover:font-bold" 
+                    className="col-span-1 cursor-pointer text-sm text-center hover:italic hover:font-bold" 
                     style={{ opacity: isHovered ? 1 : 0 }}
                     onClick={(e) => {
                         e.stopPropagation();

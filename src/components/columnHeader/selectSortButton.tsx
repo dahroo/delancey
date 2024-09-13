@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FaChevronUp, FaChevronDown, FaMinus } from 'react-icons/fa';
+import React, { useState, useRef, useEffect } from 'react';
+import { FaChevronCircleUp, FaChevronCircleDown, FaMinus } from 'react-icons/fa';
 
 interface SelectSortButtonProps {
   label: string;
@@ -21,25 +21,53 @@ export const SelectSortButton: React.FC<SelectSortButtonProps> = ({
   options
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && dropdownRef.current && buttonRef.current) {
+      const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      
+      const leftOffset = buttonRect.left + (buttonRect.width / 2) - (dropdownRect.width / 2);
+      const topOffset = buttonRect.bottom + window.scrollY + 10;
+
+      dropdownRef.current.style.left = `${leftOffset}px`;
+      dropdownRef.current.style.top = `${topOffset}px`;
+    }
+  }, [isOpen]);
 
   const renderSortIcon = () => {
     if (currentSort !== column) {
-      return <FaMinus/>;
+      return <FaMinus size={24}/>;
     }
-    return currentOrder === 'asc' ? <FaChevronUp/> : <FaChevronDown/>;
+    return currentOrder === 'asc' ? <FaChevronCircleUp size={24}/> : <FaChevronCircleDown size={24}/>;
   };
 
   return (
-    <div className="flex flex-col relative">
+    <div className="relative" ref={buttonRef}>
       <div className="flex flex-row">
         <button
-          className="flex-grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap items-center text-left hover:italic hover:font-bold"
+          className="flex-grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap items-center text-center bg-blue-700 text-white px-4 py-1 rounded-full hover:italic"
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className=''>{label}</span>
         </button>
         <button
-          className="items-center hover:bg-gray-100 pl-2 pr-2 flex-shrink-0"
+          className="items-center hover:bg-gray-100 rounded-full pl-2 pr-2 ml-1 flex-shrink-0"
           onClick={() => onSort(column)}
         >
           {renderSortIcon()}
@@ -47,11 +75,14 @@ export const SelectSortButton: React.FC<SelectSortButtonProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute min-w-[139px] flex flex-col z-10 bg-white border-b border-l border-r border-black w-full">
+        <div 
+          ref={dropdownRef}
+          className="fixed min-w-[180px] flex flex-col z-10 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden"
+        >
           {options.map((option) => (
             <button
               key={option}
-              className="border-b border-gray-200 last:border-b-0 text-left hover:font-bold hover:italic"
+              className="px-4 py-2 text-left hover:bg-blue-50 focus:bg-blue-100 focus:outline-none transition-colors duration-150 ease-in-out"
               onClick={() => {
                 onSelect(option);
                 setIsOpen(false);

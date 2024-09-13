@@ -125,7 +125,7 @@ const Landing: React.FC = () => {
           <p className="italic text-gray-300">"I saw the angel in the marble and carved until I set him free." -- Michelangelo</p>
 
           <p className="mt-7">the missing link between spotify and your perfect set. </p>
-          <p> sort your playlists by bpm, tempo, danceability, and much more.</p>
+          <p> sort your playlists by bpm, key, danceability, and much more.</p>
 
           <p className="mt-7"> 
             delancey is best on desktop/pc. delancey is <a href="https://github.com/dahroo/delancey" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:italic">open-source. </a>

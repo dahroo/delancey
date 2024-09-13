@@ -1,3 +1,4 @@
+import React from "react";
 import { PlaylistPreview } from "../../api/types";
 import { useNavigate } from "react-router-dom";
 
@@ -10,10 +11,13 @@ export const PlaylistPreviewCard: React.FC<PlaylistPreviewCardProps> = ({ playli
     const handleCardClick = () => {
         navigate(`/playlist/${playlist.id}`);
     }
+
     return (
-        <div className="grid grid-rows-4 min-w-[200px] w-full h-full border-2 border-black group cursor-pointer"
-             onClick={handleCardClick}>
-            <div className="row-span-3 relative w-full pb-[100%]">
+        <div 
+            className="flex flex-row w-full bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
+            onClick={handleCardClick}
+        >
+            <div className="relative w-32 h-32 flex-shrink-0">
                 {playlist.imageUrl ? (
                     <img 
                         src={playlist.imageUrl} 
@@ -24,9 +28,9 @@ export const PlaylistPreviewCard: React.FC<PlaylistPreviewCardProps> = ({ playli
                     <div className="absolute top-0 left-0 w-full h-full bg-black" />
                 )}
             </div>
-            <div className="row-span-1 bg-gray-100 flex flex-col justify-center items-center group-hover:bg-gray-300">
-                <p className="text-sm font-bold truncate max-w-[200px] text-center px-2">{playlist.name}</p>
-                <p className="text-xs text-gray-600 truncate w-full text-center">{playlist.ownerDisplayName}</p>
+            <div className="flex flex-col justify-center px-4 overflow-hidden">
+                <p className="text-3xl font-bold truncate">{playlist.name}</p>
+                <p className="text-lg text-gray-600 truncate">{playlist.ownerDisplayName}</p>
             </div>
         </div>
     )

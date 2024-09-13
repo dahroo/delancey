@@ -11,18 +11,13 @@ interface PlaylistGridProps {
 
 const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists }) => {
   return (
-    <div className="w-full overflow-hidden">
-      <div className="grid grid-cols-2 w-full"
-        style={{
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr ))',
-            gridAutoRows: '1fr',
-        }}
-      >
+    <div className="w-full p-4 overflow-hidden">
+      <div className="flex flex-col space-y-4">
         {playlists.map((preview) => (
           <PlaylistPreviewCard key={preview.id} playlist={preview} />
         ))}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Playlists_TrackObject } from '../../api/types';
 import { formatDuration, pitchClassToKey } from '../../utils/utils';
 import { useState } from 'react';
+import { FaTrash } from "react-icons/fa";
 
 interface TrackProps {
     track: Playlists_TrackObject;
@@ -60,14 +61,14 @@ export const TrackCard: React.FC<TrackProps> = ({ track, removeTrack, selectedFe
             {/* Remove */}
             {isOwner && (
                 <div 
-                    className="col-span-1 cursor-pointer text-sm text-center hover:italic hover:font-bold" 
+                    className="col-span-1 flex cursor-pointer text-center items-center justify-center" 
                     style={{ opacity: isHovered ? 1 : 0 }}
                     onClick={(e) => {
                         e.stopPropagation();
                         removeTrack(track.id);
                     }}
                 >
-                    remove
+                    <FaTrash size={18} className='text-black hover:text-red-700'/>
                 </div>
             )}
 

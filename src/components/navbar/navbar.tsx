@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className='row-span-1 w-full grid grid-rows-[auto_auto_auto] border-b-2 border-black text-xl font-bold p-3'>
       {/* profile */}
-      <div className='flex flex-row justify-between items-center bg-white pl-2 pr-2 mb-2'>
+      <div className='flex flex-row justify-between items-center bg-white mb-2 mx-2'>
         <p>{getGreeting()}, {profile.display_name}</p>
         <div className='flex flex-row'>
           <HomeButton />
@@ -49,41 +49,41 @@ const Navbar: React.FC = () => {
       </div>
       
       {/* song name/controls */}
-      {currentTrack && (
-        <div className='flex items-center pl-2 pr-2 bg-gray-300 rounded-full px-4 py-1 mb-2 mx-1'>
-          <div className="mr-4 truncate flex-grow">
-            {currentTrack.name} - {currentTrack.artists.join(', ')}
-          </div>
-          <button onClick={handlePrevious} className="p-1 rounded-full hover:bg-gray-200 transition-colors"> 
-            <FaChevronCircleLeft size={24}/> 
-          </button>
-          <button onClick={handlePlayPause} className="p-1 rounded-full hover:bg-gray-200 transition-colors mx-1">
-            {isPlaying ? <FaPauseCircle size={24}/> : <FaPlayCircle size={24}/>}
-          </button>
-          <button onClick={handleNext} className="p-1 rounded-full hover:bg-gray-200 transition-colors"> 
-            <FaChevronCircleRight size={24}/> 
-          </button>
+      <div className='flex items-center bg-gray-300 rounded-full px-4 py-1 mb-2'>
+        <div className="mr-4 truncate flex-grow">
+          {currentTrack 
+            ? `${currentTrack.name} - ${currentTrack.artists.join(', ')}`
+            : "it's a bit quiet here. play a song to get started!"}
         </div>
-      )}
+        <button onClick={handlePrevious} className="p-1 rounded-full hover:bg-gray-200 transition-colors" disabled={!currentTrack}> 
+          <FaChevronCircleLeft size={24} className={!currentTrack ? "opacity-50" : ""} /> 
+        </button>
+        <button onClick={handlePlayPause} className="p-1 rounded-full hover:bg-gray-200 transition-colors mx-1" disabled={!currentTrack}>
+          {isPlaying ? <FaPauseCircle size={24} /> : <FaPlayCircle size={24} className={!currentTrack ? "opacity-50" : ""} />}
+        </button>
+        <button onClick={handleNext} className="p-1 rounded-full hover:bg-gray-200 transition-colors" disabled={!currentTrack}> 
+          <FaChevronCircleRight size={24} className={!currentTrack ? "opacity-50" : ""} /> 
+        </button>
+      </div>
       
       {/* progress bar */}
-      {currentTrack && (
-        <div className="px-2">
+      <div className="px-2">
+        <div 
+          className={`w-full h-2 bg-gray-200 rounded-full cursor-pointer relative ${!currentTrack ? "opacity-50" : ""}`}
+          onClick={handleSeekClick}
+        >
           <div 
-            className="w-full h-2 bg-gray-200 rounded-full cursor-pointer relative"
-            onClick={handleSeekClick}
+            className="h-full bg-blue-700 rounded-full relative"
+            style={{ width: currentTrack ? `${(progressMs / currentTrack.durationMs) * 100}%` : '0%' }}
           >
-            <div 
-              className="h-full bg-blue-700 rounded-full relative"
-              style={{ width: `${(progressMs / currentTrack.durationMs) * 100}%` }}
-            >
+            {currentTrack && (
               <div 
                 className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-700 rounded-full shadow-md"
               ></div>
-            </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

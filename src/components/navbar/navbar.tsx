@@ -38,9 +38,9 @@ const Navbar: React.FC = () => {
   if (!profile) return <div>guest</div>;
 
   return (
-    <nav className='row-span-1 w-full grid grid-rows-[auto_auto_auto]  text-xl font-bold p-3'>
+    <nav className='row-span-1 w-full grid grid-rows-[auto_auto_auto] text-xl font-bold p-3'>
       {/* profile */}
-      <div className='flex flex-row justify-between items-center bg-white mb-2 mx-2'>
+      <div className='flex flex-row justify-between items-center mb-2 mx-2'>
         <p>{getGreeting()}, {profile.display_name}</p>
         <div className='flex flex-row'>
           <HomeButton />

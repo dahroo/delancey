@@ -26,3 +26,19 @@ export const pitchClassToKey = (pitchClass: number): string => {
     }
 };
 
+export const generateLandingGradient = (): string => {
+  const colors = ['white', 'silver', '#1d4ed8']; // blue-700
+  const stops = Math.floor(Math.random() * 3) + 2; // 2 to 4 stops
+  const angles = [0, 45, 90, 135, 180, 225, 270, 315];
+  const angle = angles[Math.floor(Math.random() * angles.length)];
+
+  let gradient = `linear-gradient(${angle}deg,`;
+
+  for (let i = 0; i < stops; i++) {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const position = i === 0 ? 0 : i === stops - 1 ? 100 : Math.floor(Math.random() * 100);
+    gradient += `${color} ${position}%${i < stops - 1 ? ',' : ')'}`;
+  }
+
+  return gradient;
+};

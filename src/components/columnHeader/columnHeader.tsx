@@ -29,7 +29,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
         <SortButton label="track" column="name" currentSort={currentSort} currentOrder={currentOrder} onClick={onSort} />
       </div>
       {[0, 1, 2].map((index) => (
-        <div key={index} className={`col-span-1`}>
+        <div key={index} className={`col-span-1 m-2`}>
           <SelectSortButton
             label={selectedFeatures[index] || "<select>"}
             column={selectedFeatures[index]}

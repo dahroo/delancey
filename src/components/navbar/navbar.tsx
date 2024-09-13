@@ -1,12 +1,9 @@
-import React from 'react';
+import React, { useContext, useCallback } from 'react';
 import LogoutButton from './logoutButton';
-import { useContext } from 'react';
 import { AuthContext } from '../../app/contexts/authContext';
 import { PlaybackContext } from '../../app/contexts/playbackContext';
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { IoPauseSharp, IoPlaySharp } from "react-icons/io5";
+import { FaChevronCircleLeft, FaChevronCircleRight, FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 import { HomeButton } from './homeButton';
-
 
 const Navbar: React.FC = () => {
   const { profile } = useContext(AuthContext);
@@ -20,7 +17,7 @@ const Navbar: React.FC = () => {
     handleSeek
   } = useContext(PlaybackContext);
 
-  const handleSeekClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleSeekClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (currentTrack) {
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -28,7 +25,7 @@ const Navbar: React.FC = () => {
       const positionMs = Math.floor(percentage * currentTrack.durationMs);
       handleSeek(positionMs);
     }
-  };
+  }, [currentTrack, handleSeek]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -38,47 +35,55 @@ const Navbar: React.FC = () => {
     return "good evening";
   };
 
-
-
   if (!profile) return <div>guest</div>;
 
   return (
-    <nav className='row-span-1 w-full grid grid-rows-[auto_auto_1fr] border-b-2 border-black text-xl font-bold p-3'>
-      {/*profile*/}
-      <div className='flex flex-row justify-between items-center bg-white pl-2 pr-2'>
+    <nav className='row-span-1 w-full grid grid-rows-[auto_auto_auto] border-b-2 border-black text-xl font-bold p-3'>
+      {/* profile */}
+      <div className='flex flex-row justify-between items-center bg-white pl-2 pr-2 mb-2'>
         <p>{getGreeting()}, {profile.display_name}</p>
         <div className='flex flex-row'>
           <HomeButton />
           <LogoutButton />
         </div>
-
       </div>
-      {/*song name/controls*/}
+      
+      {/* song name/controls */}
       {currentTrack && (
-        <div className='flex items-center bg-white pl-1 pr-1'>
-          <div className="mr-4">
+        <div className='flex items-center pl-2 pr-2 bg-gray-300 rounded-full px-4 py-1 mb-2 mx-1'>
+          <div className="mr-4 truncate flex-grow">
             {currentTrack.name} - {currentTrack.artists.join(', ')}
           </div>
-          <button onClick={handlePrevious} className="pl-2 pr-2 pt-1 pb-1 hover:bg-gray-200"> <FaChevronLeft/> </button>
-          <button onClick={handlePlayPause} className="pl-2 pr-2 pt-1 pb-1 hover:bg-gray-200">
-            {isPlaying ? <IoPauseSharp/> : <IoPlaySharp/>}
+          <button onClick={handlePrevious} className="p-1 rounded-full hover:bg-gray-200 transition-colors"> 
+            <FaChevronCircleLeft size={24}/> 
           </button>
-          <button onClick={handleNext} className="pl-2 pr-2 pt-1 pb-1 hover:bg-gray-200"> <FaChevronRight/> </button>
+          <button onClick={handlePlayPause} className="p-1 rounded-full hover:bg-gray-200 transition-colors mx-1">
+            {isPlaying ? <FaPauseCircle size={24}/> : <FaPlayCircle size={24}/>}
+          </button>
+          <button onClick={handleNext} className="p-1 rounded-full hover:bg-gray-200 transition-colors"> 
+            <FaChevronCircleRight size={24}/> 
+          </button>
         </div>
       )}
-      {/*progress bar*/}
+      
+      {/* progress bar */}
       {currentTrack && (
-        <div 
-          className="w-full min-h-[18px] bg-gray-200 cursor-pointer" 
-          onClick={handleSeekClick}
-        >
+        <div className="px-2">
           <div 
-            className="h-full bg-green-500" 
-            style={{ width: `${(progressMs / currentTrack.durationMs) * 100}%` }}
-          ></div>
+            className="w-full h-2 bg-gray-200 rounded-full cursor-pointer relative"
+            onClick={handleSeekClick}
+          >
+            <div 
+              className="h-full bg-blue-700 rounded-full relative"
+              style={{ width: `${(progressMs / currentTrack.durationMs) * 100}%` }}
+            >
+              <div 
+                className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-700 rounded-full shadow-md"
+              ></div>
+            </div>
+          </div>
         </div>
       )}
-
     </nav>
   );
 };

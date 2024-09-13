@@ -118,7 +118,7 @@ const Landing: React.FC = () => {
         </div>
       </div>
       
-      <div className="absolute inset-0 flex flex-col items-center justify-center pb-48 text-white">
+      <div className="absolute inset-0 flex flex-col items-center justify-center pb-48 pl-3 pr-3 text-white">
         <h1 className="text-5xl mt-48">delancey</h1>
 
         <div className="max-w-[400px] text-justify mt-7">
